@@ -4,6 +4,8 @@ Thumbs.db
 .settings/
 .DS_Store
 nbproject/
-.cpproject
+.cproject
 Debug/
 Release/
+*.pbxproj
+sudoku.xcodeproj/
