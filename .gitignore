@@ -1,0 +1,9 @@
+Thumbs.db
+.buildpath
+.project
+.settings/
+.DS_Store
+nbproject/
+.cpproject
+Debug/
+Release/
