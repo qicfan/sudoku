@@ -9,3 +9,6 @@ Debug/
 Release/
 *.pbxproj
 sudoku.xcodeproj/
+
+*.cbp
+*.layout
