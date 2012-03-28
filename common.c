@@ -46,7 +46,15 @@ array *create_array(int size) {
 // 销毁一个数组
 void destroy_array(array *data) {
 	free(data->items);
+	data->items = NULL;
 	free(data);
+	data = NULL;
 	return;
 }
 
+array *array_merge(array *array1, array *array2) {
+	int i,j,m,n,size;
+
+
+	return array1;
+}
