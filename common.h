@@ -9,17 +9,31 @@
 #ifndef sudoku_common_h
 #define sudoku_common_h
 int randoms();
-// 数组结构，items用来存放数据，size用来存放数组元素个数
-typedef struct array_struct {
-	int *items;
-	int size;
-} array;
-// 生成并且初始化数组
-array *create_array(int size);
-// 销毁数组，释放内存空间
-void destroy_array(array *data);
-// 合并数组并且去重
-array *array_merge(array *array1, array *array2);
-// 取数组的差集
-array *array_diff(array *array1, array *array2);
+
+// 定义一个简单的树
+typedef struct tree_struct {
+	// 该节点的值
+	int data;
+	// 子节点的数量
+	int child_count;
+	// 该节点的x轴
+	int x;
+	// 该节点的y轴
+	int y;
+	// 该节点在父级子节点中的位置
+	int position;
+	// 该节点的父节点
+	struct tree_struct *parent;
+	// 该节点的子节点数组
+	struct tree_struct *childs;
+} tree_node;
+
+// 生成一个节点
+tree_node *create_node(int data, int x, int y);
+// 给某一个节点添加一个子节点
+void append_child(tree_node *node, tree_node *child);
+// 销毁一个节点
+int free_node(tree_node *node);
+
+
 #endif

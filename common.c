@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include "common.h";
 
 /**
@@ -16,45 +17,57 @@
  */
 int randoms() {
 	int r;
-	r = rand()%9;
+	r = rand() % 9;
 	if (r == 0) {
 		return 1;
 	}
 	return r;
 }
 
-// 生成指定长度的数组
-array *create_array(int size) {
-	int i = 0;
-	array *data = (array *)malloc(sizeof(array));
-	if (data == NULL) {
-		printf("create array malloc failed!");
+tree_node * create_node(int data, int x, int y) {
+	tree_node * new_node = (tree_node *)malloc(sizeof(tree_node));
+	if (new_node == NULL) {
+		printf("malloc failed\n");
 		exit(0);
 	}
-	data->items = (int *)malloc(size * sizeof(int));
-	if (data->items == NULL) {
-		printf("items malloc failed!");
-		exit(0);
-	}
-	for (i=0;i<size;i++) {
-		data->items[i] = i + 1;
-	}
-	data->size = size;
-	return data;
+	new_node->data = data;
+	new_node->x = x;
+	new_node->y = y;
+	new_node->child_count = 1;
+	new_node->childs = NULL;
+	new_node->parent = NULL;
+	new_node->position = 0;
+	return new_node;
 }
 
-// 销毁一个数组
-void destroy_array(array *data) {
-	free(data->items);
-	data->items = NULL;
-	free(data);
-	data = NULL;
+void append_child(tree_node *node, tree_node *child) {
+	tree_node *tmp_node = (tree_node *)calloc(node->child_count + 1, sizeof(tree_node *));
+	if (tmp_node == NULL) {
+		printf("malloc failed\n");
+		exit(0);
+	}
+	memcpy(tmp_node, node->childs, sizeof(node->childs));
+	tmp_node[node->child_count] = *child;
+	free(node->childs);
+	node->childs = tmp_node;
+	child->position = node->child_count;
+	node->child_count ++;
+	child->parent = node;
 	return;
 }
 
-array *array_merge(array *array1, array *array2) {
-	int i,j,m,n,size;
-
-
-	return array1;
+int delete_node(tree_node *node) {
+	int i = 0;
+	if (node->child_count != 0) {
+		// 如果还有子节点则不能删除
+		return 1;
+	}
+	if (node == NULL) {
+		return 1;
+	}
+	free(node->childs);
+	node->childs = NULL;
+	free(node);
+	node = NULL;
+	return 0;
 }

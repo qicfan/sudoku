@@ -66,12 +66,54 @@ void create_random_pit() {
 	return;
 }
 
-void fill_pit(int x, int y) {
-
-	// 取这个坐标的可能解(取y轴已有值的数组、取X轴已有值的数组、取九宫格已有值的数组，对三个数组合并去重，然后和[1,2,3,4,5,6,7,8,9]取差集)
-
-	// 循环可能解数组，找到正确的解
+void get_better(tree_node *current_node, int x, int y) {
+	tree_node *node = create_node(0);
 	return;
+}
+
+// 1、从0,0开始取该坐标的最优解，
+// 2、最优解加入树中
+// 3、按顺序取每一个子节点，验证该节点值，如果符合规则，就进入深度搜索；否则删除该节点，进入下一个兄弟节点，重复3
+// 4、取该节点坐标的下一个坐标，重复1-3
+int fill_pit() {
+	int x, y, z, c=0;
+	tree_node *current_node = create_node(0, 0, 0);
+	for (y=0; y<9; y++) {
+		for (x=0; x<9; x++) {
+			if (c == 0) {
+				// 该坐标没有合适的，回到父级
+				tree_node *tmp_node = current_node->parent;
+				if (tmp_node == NULL || tmp_node->data == 0) {
+					return 1;
+				}
+				// 删除当前
+				tmp_node->childs[current_node->position] = NULL;
+				free_node(current_node);
+				current_node = tmp_node;
+				x = current_node->x;
+				y = current_node->y;
+				SUDOKU[y][x] = 0;
+			} else {
+				// 树的当前节点
+				get_better(current_node, x, y);
+			}
+			for (z=0; z<current_node->child_count; z++) {
+				if (current_node->childs[z] == NULL || !validate_pit(x, y, current_node->childs[z]->data)) {
+					// 不符合规则，进入下一个兄弟节点
+					// 删除该节点
+					free_node(current_node->childs[z]);
+					current_node->childs[z] = NULL;
+					current_node->child_count --;
+					continue;
+				}
+				// 符合规则，进入下一个坐标
+				SUDOKU[y][x] = current_node->childs[z]->data;
+				c = 1;
+				break;
+			}
+		}
+	}
+	return 0;
 }
 
 void hash_sudoku(level) {
@@ -89,15 +131,21 @@ void init_sudoku() {
 }
 
 void generate_sudoku(int level) {
-	int x,y;
+	int x,y,z=0;
 	// 初始化数独种子（给每一行随机生成一个数字）
 	init_sudoku();
 	create_random_pit();
 	// 循环给每一个格子填充数字（求解）
-	for (int y=0; y<9; y++) {
-		for (int x=0; x<9; x++) {
-			fill_pit(x, y);
+	while (1) {
+		if (x > 81) {
+			break;
 		}
+		x ++;
+		z = fill_pit();
+		if (z == 0) {
+			break;
+		}
+
 	}
 	// 给数独挖坑
 	hash_sudoku(level);
