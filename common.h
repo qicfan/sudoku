@@ -25,7 +25,7 @@ typedef struct tree_struct {
 	// 该节点的父节点
 	struct tree_struct *parent;
 	// 该节点的子节点数组
-	struct tree_struct *childs;
+	struct tree_struct *childs[9];
 } tree_node;
 
 // 生成一个节点
@@ -33,7 +33,7 @@ tree_node *create_node(int data, int x, int y);
 // 给某一个节点添加一个子节点
 void append_child(tree_node *node, tree_node *child);
 // 销毁一个节点
-int free_node(tree_node *node);
+int delete_node(tree_node *node);
 
 
 #endif

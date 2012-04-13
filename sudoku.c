@@ -1,167 +1,1 @@
-//
-//  sudoku.c
-//  sudoku
-//
-//  Created by é½ æ™“é¹ on 12-3-25.
-//  Copyright (c) 2012å¹´ Yushuo. All rights reserved.
-//
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-#include "common.h";
-#include "sudoku.h";
-
-int validate_pit(int x, int y, int z) {
-	int i,j;
-	// åˆ¤æ–­å½“å‰è¡Œæ˜¯å¦æœ‰é‡å¤å€¼
-	for (j=0;j<9;j++) {
-		if (SUDOKU[y][j] == z) {
-			// æœ‰é‡å¤å€¼ï¼Œè¿”å›0
-			return 0;
-		}
-	}
-	// åˆ¤æ–­å½“å‰åˆ—æ˜¯å¦æœ‰é‡å¤å€¼
-	for (j=0;j<9;j++) {
-		if (SUDOKU[j][x] == z) {
-			return 0;
-		}
-	}
-	// åˆ¤æ–­ä¹å®«æ ¼æ˜¯å¦æœ‰é‡å¤å€¼
-	int xmin = (int)x/3 * 3;
-	int ymin = (int)y/3 * 3;
-	int xmax = xmin + 2;
-	int ymax = ymin + 2;
-	for (i=ymin; i<=ymax; i++) {
-		for (j=xmin; j<= xmax; j++) {
-			if (SUDOKU[i][j] == z) {
-				return 0;
-			}
-		}
-	}
-	return 1;
-}
-
-void create_pit(int x, int y) {
-	int z;
-	z = randoms();
-
-	if (validate_pit(x,y,z) == 1) {
-		SUDOKU[y][x] = z;
-		return;
-	}
-	return create_pit(x, y);
-
-}
-
-void create_random_pit() {
-	int x,y;
-	srand((int)time(0));
-	// ç»™1-9è¡Œéšæœºä½ç½®èµ‹äºˆç§å­
-	// ç§å­éšæœºç»™äºˆ
-	for (y=0;y<9;y++) {
-		x = randoms();
-		create_pit(x, y);
-	}
-	return;
-}
-
-void get_better(tree_node *current_node, int x, int y) {
-	tree_node *node = create_node(0);
-	return;
-}
-
-// 1ã€ä»0,0å¼€å§‹å–è¯¥åæ ‡çš„æœ€ä¼˜è§£ï¼Œ
-// 2ã€æœ€ä¼˜è§£åŠ å…¥æ ‘ä¸­
-// 3ã€æŒ‰é¡ºåºå–æ¯ä¸€ä¸ªå­èŠ‚ç‚¹ï¼ŒéªŒè¯è¯¥èŠ‚ç‚¹å€¼ï¼Œå¦‚æœç¬¦åˆè§„åˆ™ï¼Œå°±è¿›å…¥æ·±åº¦æœç´¢ï¼›å¦åˆ™åˆ é™¤è¯¥èŠ‚ç‚¹ï¼Œè¿›å…¥ä¸‹ä¸€ä¸ªå…„å¼ŸèŠ‚ç‚¹ï¼Œé‡å¤3
-// 4ã€å–è¯¥èŠ‚ç‚¹åæ ‡çš„ä¸‹ä¸€ä¸ªåæ ‡ï¼Œé‡å¤1-3
-int fill_pit() {
-	int x, y, z, c=0;
-	tree_node *current_node = create_node(0, 0, 0);
-	for (y=0; y<9; y++) {
-		for (x=0; x<9; x++) {
-			if (c == 0) {
-				// è¯¥åæ ‡æ²¡æœ‰åˆé€‚çš„ï¼Œå›åˆ°çˆ¶çº§
-				tree_node *tmp_node = current_node->parent;
-				if (tmp_node == NULL || tmp_node->data == 0) {
-					return 1;
-				}
-				// åˆ é™¤å½“å‰
-				tmp_node->childs[current_node->position] = NULL;
-				free_node(current_node);
-				current_node = tmp_node;
-				x = current_node->x;
-				y = current_node->y;
-				SUDOKU[y][x] = 0;
-			} else {
-				// æ ‘çš„å½“å‰èŠ‚ç‚¹
-				get_better(current_node, x, y);
-			}
-			for (z=0; z<current_node->child_count; z++) {
-				if (current_node->childs[z] == NULL || !validate_pit(x, y, current_node->childs[z]->data)) {
-					// ä¸ç¬¦åˆè§„åˆ™ï¼Œè¿›å…¥ä¸‹ä¸€ä¸ªå…„å¼ŸèŠ‚ç‚¹
-					// åˆ é™¤è¯¥èŠ‚ç‚¹
-					free_node(current_node->childs[z]);
-					current_node->childs[z] = NULL;
-					current_node->child_count --;
-					continue;
-				}
-				// ç¬¦åˆè§„åˆ™ï¼Œè¿›å…¥ä¸‹ä¸€ä¸ªåæ ‡
-				SUDOKU[y][x] = current_node->childs[z]->data;
-				c = 1;
-				break;
-			}
-		}
-	}
-	return 0;
-}
-
-void hash_sudoku(level) {
-	return;
-}
-
-void init_sudoku() {
-	int x,y;
-	for (y=0; y<9; y++) {
-		for (x=0; x<9; x++) {
-			SUDOKU[y][x] = 0;
-		}
-	}
-	return;
-}
-
-void generate_sudoku(int level) {
-	int x,y,z=0;
-	// åˆå§‹åŒ–æ•°ç‹¬ç§å­ï¼ˆç»™æ¯ä¸€è¡Œéšæœºç”Ÿæˆä¸€ä¸ªæ•°å­—ï¼‰
-	init_sudoku();
-	create_random_pit();
-	// å¾ªç¯ç»™æ¯ä¸€ä¸ªæ ¼å­å¡«å……æ•°å­—ï¼ˆæ±‚è§£ï¼‰
-	while (1) {
-		if (x > 81) {
-			break;
-		}
-		x ++;
-		z = fill_pit();
-		if (z == 0) {
-			break;
-		}
-
-	}
-	// ç»™æ•°ç‹¬æŒ–å‘
-	hash_sudoku(level);
-	return;
-}
-
-int main() {
-	int x, y;
-	printf("Hello sudoku!\n");
-	generate_sudoku(1);
-	for (y=0; y<9; y++) {
-		printf("| ");
-		for (x=0; x<9; x++) {
-			printf("%d | ", SUDOKU[y][x]);
-		}
-		printf("\n");
-	}
-    return 0;
-}
+////  sudoku.c//  sudoku////  Created by Æë ÏşÅô on 12-3-25.//  Copyright (c) 2012Äê Yushuo. All rights reserved.//#include <stdio.h>#include <stdlib.h>#include <time.h>#include "common.h"#include "sudoku.h"int validate_pit(int x, int y, int z) {	int i,j;	// ÅĞ¶Ïµ±Ç°ĞĞÊÇ·ñÓĞÖØ¸´Öµ	for (j=0; j<9; j++) {		if (SUDOKU[y][j] == z) {			// ÓĞÖØ¸´Öµ£¬·µ»Ø0			return 0;		}	}	// ÅĞ¶Ïµ±Ç°ÁĞÊÇ·ñÓĞÖØ¸´Öµ	for (j=0; j<9; j++) {		if (SUDOKU[j][x] == z) {			return 0;		}	}	// ÅĞ¶Ï¾Å¹¬¸ñÊÇ·ñÓĞÖØ¸´Öµ	int xmin = (int)x/3 * 3;	int ymin = (int)y/3 * 3;	int xmax = xmin + 2;	int ymax = ymin + 2;	for (i=ymin; i<=ymax; i++) {		for (j=xmin; j<= xmax; j++) {			if (SUDOKU[i][j] == z) {				return 0;			}		}	}	return 1;}void create_pit(int x, int y) {	int z;	z = randoms();	if (validate_pit(x,y,z) == 1) {		SUDOKU[y][x] = z;		return;	}	return create_pit(x, y);}void create_random_pit() {	int x,y;	srand((int)time(0));	// ¸ø1-9ĞĞËæ»úÎ»ÖÃ¸³ÓèÖÖ×Ó	// ÖÖ×ÓËæ»ú¸øÓè	for (y=0; y<9; y++) {		x = randoms();		create_pit(x, y);	}	return;}void get_better(tree_node *current_node, int x, int y) {	// ¶¨ÒåÒ»¸öÊı×é	tree_node *node;	int better[9];	int i,j;	for (i=0;i<9;i++) {		better[i] = i + 1;	}	// ÅĞ¶Ïµ±Ç°ĞĞÊÇ·ñÓĞÖØ¸´Öµ	for (j=0; j<9; j++) {		if (SUDOKU[y][j] > 0) {			better[SUDOKU[y][j]-1] = 0;		}	}	// ÅĞ¶Ïµ±Ç°ÁĞÊÇ·ñÓĞÖØ¸´Öµ	for (j=0; j<9; j++) {		if (SUDOKU[j][x] > 0) {			better[SUDOKU[j][x]-1] = 0;		}	}	// ÅĞ¶Ï¾Å¹¬¸ñÊÇ·ñÓĞÖØ¸´Öµ	int xmin = (int)x/3 * 3;	int ymin = (int)y/3 * 3;	int xmax = xmin + 2;	int ymax = ymin + 2;	for (i=ymin; i<=ymax; i++) {		for (j=xmin; j<= xmax; j++) {			if (SUDOKU[i][j]  > 0) {				better[SUDOKU[i][j]-1] = 0;			}		}	}	// ÖØĞÂÕûÀíbetter	j = 0;	for (i=0; i<9; i++) {		if (better[i] == 0) {			continue;		}		node = create_node(better[i], x, y);		append_child(current_node, node);		//printf("%d-", current_node->child_count);	}	return;}// 1¡¢´Ó0,0¿ªÊ¼È¡¸Ã×ø±êµÄ×îÓÅ½â£¬// 2¡¢×îÓÅ½â¼ÓÈëÊ÷ÖĞ// 3¡¢°´Ë³ĞòÈ¡Ã¿Ò»¸ö×Ó½Úµã£¬ÑéÖ¤¸Ã½ÚµãÖµ£¬Èç¹û·ûºÏ¹æÔò£¬¾Í½øÈëÉî¶ÈËÑË÷£»·ñÔòÉ¾³ı¸Ã½Úµã£¬½øÈëÏÂÒ»¸öĞÖµÜ½Úµã£¬ÖØ¸´3// 4¡¢È¡¸Ã½Úµã×ø±êµÄÏÂÒ»¸ö×ø±ê£¬ÖØ¸´1-3int fill_pit() {	int x, y, z, c=0;	tree_node *current_node = create_node(0, 0, 0);	c = 1;	for (y=0; y<9; y++) {		for (x=0; x<9; x++) {			if (SUDOKU[y][x] > 0) {				c = 1;				continue;			}			if (c == 0) {				// ¸Ã×ø±êÃ»ÓĞºÏÊÊµÄ£¬»Øµ½¸¸¼¶				tree_node *tmp_node = current_node->parent;				if (tmp_node == NULL || tmp_node->data == 0) {					return 1;				}				// É¾³ıµ±Ç°				tmp_node->childs[current_node->position] = NULL;				delete_node(current_node);				current_node = tmp_node;				x = current_node->x;				y = current_node->y;				SUDOKU[y][x] = 0;			} else {				// Ê÷µÄµ±Ç°½Úµã				get_better(current_node, x, y);				c = 0;			}			if (current_node->child_count == 0) {				continue;			}			for (z=0; z<current_node->child_count; z++) {printf("%d-%d-%d-%d\n", y, x, z, current_node->child_count);				if (current_node->childs[z] == NULL) {					printf("NULL\n");					continue;				}				if (!validate_pit(x, y, current_node->childs[z]->data)) {					// ²»·ûºÏ¹æÔò£¬½øÈëÏÂÒ»¸öĞÖµÜ½Úµã					// É¾³ı¸Ã½Úµã					printf("%d-delete\n", current_node->childs[z]->data);					delete_node(current_node->childs[z]);					current_node->childs[z] = NULL;					current_node->child_count --;					continue;				}				// ·ûºÏ¹æÔò£¬½øÈëÏÂÒ»¸ö×ø±ê				printf("%d-OK\n", current_node->childs[z]->data);				SUDOKU[y][x] = current_node->childs[z]->data;				current_node = current_node->childs[z];				c = 1;				break;			}printf("\n");		}	}	return 0;}void hash_sudoku(level) {	return;}void init_sudoku() {	int x,y;	for (y=0; y<9; y++) {		for (x=0; x<9; x++) {			SUDOKU[y][x] = 0;		}	}	return;}void generate_sudoku(int level) {	// ³õÊ¼»¯Êı¶ÀÖÖ×Ó£¨¸øÃ¿Ò»ĞĞËæ»úÉú³ÉÒ»¸öÊı×Ö£©	init_sudoku();	create_random_pit();	// Ñ­»·¸øÃ¿Ò»¸ö¸ñ×ÓÌî³äÊı×Ö£¨Çó½â£©	fill_pit();	// ¸øÊı¶ÀÍÚ¿Ó	hash_sudoku(level);	return;}int main() {	int x, y;	printf("Hello sudoku!\n");	generate_sudoku(1);	for (y=0; y<9; y++) {		printf("| ");		for (x=0; x<9; x++) {			printf("%d | ", SUDOKU[y][x]);		}		printf("\n");	}	return 0;}

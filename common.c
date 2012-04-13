@@ -2,18 +2,18 @@
 //  common.c
 //  sudoku
 //
-//  Created by é½ æ™“é¹ on 12-3-25.
-//  Copyright (c) 2012å¹´ Yushuo. All rights reserved.
+//  Created by Æë ÏşÅô on 12-3-25.
+//  Copyright (c) 2012Äê Yushuo. All rights reserved.
 //
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "common.h";
+#include "common.h"
 
 /**
- ç”Ÿæˆ1-9çš„éšæœºæ•°
+ Éú³É1-9µÄËæ»úÊı
  */
 int randoms() {
 	int r;
@@ -24,7 +24,7 @@ int randoms() {
 	return r;
 }
 
-tree_node * create_node(int data, int x, int y) {
+tree_node * create_node(int data, int x, int y) {	int i;
 	tree_node * new_node = (tree_node *)malloc(sizeof(tree_node));
 	if (new_node == NULL) {
 		printf("malloc failed\n");
@@ -33,23 +33,14 @@ tree_node * create_node(int data, int x, int y) {
 	new_node->data = data;
 	new_node->x = x;
 	new_node->y = y;
-	new_node->child_count = 1;
-	new_node->childs = NULL;
+	new_node->child_count = 0;	for (i=0; i<9; i++) {		new_node->childs[i] = NULL;	}
 	new_node->parent = NULL;
 	new_node->position = 0;
 	return new_node;
 }
 
 void append_child(tree_node *node, tree_node *child) {
-	tree_node *tmp_node = (tree_node *)calloc(node->child_count + 1, sizeof(tree_node *));
-	if (tmp_node == NULL) {
-		printf("malloc failed\n");
-		exit(0);
-	}
-	memcpy(tmp_node, node->childs, sizeof(node->childs));
-	tmp_node[node->child_count] = *child;
-	free(node->childs);
-	node->childs = tmp_node;
+	node->childs[node->child_count] = child;
 	child->position = node->child_count;
 	node->child_count ++;
 	child->parent = node;
@@ -57,16 +48,13 @@ void append_child(tree_node *node, tree_node *child) {
 }
 
 int delete_node(tree_node *node) {
-	int i = 0;
 	if (node->child_count != 0) {
-		// å¦‚æœè¿˜æœ‰å­èŠ‚ç‚¹åˆ™ä¸èƒ½åˆ é™¤
+		// Èç¹û»¹ÓĞ×Ó½ÚµãÔò²»ÄÜÉ¾³ı
 		return 1;
 	}
 	if (node == NULL) {
 		return 1;
-	}
-	free(node->childs);
-	node->childs = NULL;
+	}	if (node->parent != NULL) {		node->parent->childs[node->position] = NULL;		node->parent->child_count --;	}
 	free(node);
 	node = NULL;
 	return 0;
