@@ -48,13 +48,27 @@ void append_child(tree_node *node, tree_node *child) {
 }
 
 int delete_node(tree_node *node) {
-	if (node->child_count != 0) {
-		// 如果还有子节点则不能删除
-		return 1;
-	}
 	if (node == NULL) {
 		return 1;
-	}	if (node->parent != NULL) {		node->parent->childs[node->position] = NULL;		node->parent->child_count --;	}
+	}
+	if (node->child_count > 0) {
+		// 如果还有子节点则不能删除
+		int j;
+		for (j=0;j<node->child_count;j++) {
+			delete_node(node->childs[j]);
+		}
+	}	if (node->parent != NULL) {
+		tree_node *tmp;
+		int end = node->parent->child_count - 1;
+		// 与最后一位调换位置
+		if (node->position == end || node->parent->child_count == 1) {
+			node->parent->childs[node->position] = NULL;
+		} else {
+			tmp = node->parent->childs[end];
+			tmp->position = node->position;
+			node->parent->childs[end] = NULL;
+			node->parent->childs[node->position] = tmp;
+		}		node->parent->child_count --;	}
 	free(node);
 	node = NULL;
 	return 0;
