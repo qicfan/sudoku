@@ -1,1 +1,6 @@
-无聊做的一个数独程序，可以生成数独，并且验证解是否正确
+create sudoku
+
+INSTALLITION
+1、make
+2、make clean
+3、./soduku
