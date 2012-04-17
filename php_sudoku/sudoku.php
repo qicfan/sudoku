@@ -13,7 +13,7 @@ foreach($functions as $func) {
 echo "$br\n";
 $function = 'confirm_' . $module . '_compiled';
 if (extension_loaded($module)) {
-	$array = generate_sudoku(1);
+	$array = lgenerate_sudoku(1);
 	print_r($array);
 	$str = count($array);
 } else {

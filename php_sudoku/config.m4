@@ -8,7 +8,6 @@ dnl without editing.
 dnl If your extension references something external, use with:
 
 PHP_ARG_WITH(sudoku, for sudoku support,
-dnl Make sure that the comment is aligned:
 [  --with-sudoku             Include sudoku support])
 
 dnl Otherwise use enable:
@@ -65,5 +64,5 @@ if test "$PHP_SUDOKU" != "no"; then
   dnl
   dnl PHP_SUBST(SUDOKU_SHARED_LIBADD)
 
-  PHP_NEW_EXTENSION(sudoku, sudoku.c, $ext_shared)
+  PHP_NEW_EXTENSION(sudoku, sudoku.c lsudoku.c common.c, $ext_shared)
 fi

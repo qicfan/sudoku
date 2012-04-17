@@ -4431,7 +4431,7 @@ if test "$PHP_SUDOKU" != "no"; then
 
 
   old_IFS=$IFS
-  for ac_src in sudoku.c; do
+  for ac_src in sudoku.c lsudoku.c common.c; do
   
       IFS=.
       set $ac_src
@@ -4480,7 +4480,7 @@ EOF
 
 
   old_IFS=$IFS
-  for ac_src in sudoku.c; do
+  for ac_src in sudoku.c lsudoku.c common.c; do
   
       IFS=.
       set $ac_src
@@ -4610,7 +4610,7 @@ _ACEOF
 
 
   old_IFS=$IFS
-  for ac_src in sudoku.c; do
+  for ac_src in sudoku.c lsudoku.c common.c; do
   
       IFS=.
       set $ac_src
@@ -4656,7 +4656,7 @@ EOF
 
 
   old_IFS=$IFS
-  for ac_src in sudoku.c; do
+  for ac_src in sudoku.c lsudoku.c common.c; do
   
       IFS=.
       set $ac_src

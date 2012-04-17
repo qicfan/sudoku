@@ -42,7 +42,8 @@ PHP_RINIT_FUNCTION(sudoku);
 PHP_RSHUTDOWN_FUNCTION(sudoku);
 PHP_MINFO_FUNCTION(sudoku);
 
-PHP_FUNCTION(generate_sudoku);
+PHP_FUNCTION(lgenerate_sudoku);
+PHP_FUNCTION(get_sudoku);
 
 /* 
   	Declare any global variables you may need between the BEGIN

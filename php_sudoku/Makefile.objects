@@ -1,5 +1,9 @@
 sudoku.lo: /Users/qicfan/Develop/php-5.3.8/ext/sudoku/sudoku.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/Users/qicfan/Develop/php-5.3.8/ext/sudoku $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /Users/qicfan/Develop/php-5.3.8/ext/sudoku/sudoku.c -o sudoku.lo 
+lsudoku.lo: /Users/qicfan/Develop/php-5.3.8/ext/sudoku/lsudoku.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/Users/qicfan/Develop/php-5.3.8/ext/sudoku $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /Users/qicfan/Develop/php-5.3.8/ext/sudoku/lsudoku.c -o lsudoku.lo 
+common.lo: /Users/qicfan/Develop/php-5.3.8/ext/sudoku/common.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/Users/qicfan/Develop/php-5.3.8/ext/sudoku $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /Users/qicfan/Develop/php-5.3.8/ext/sudoku/common.c -o common.lo 
 $(phplibdir)/sudoku.la: ./sudoku.la
 	$(LIBTOOL) --mode=install cp ./sudoku.la $(phplibdir)
 

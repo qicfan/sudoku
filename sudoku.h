@@ -16,7 +16,7 @@ int DIS_SUDOKU[9][9];
 // 初始化数独数据，将每一个格子都设置为0
 void init_sudoku();
 // 生成数独，根据level来生成指定难度的数独
-void generate_sudoku(int level);
+void generate_sudoku();
 // 对每一行随机填一个数字
 void create_random_pit();
 // 对每一行随机填数字的时候，如果这个数字不满足规则，则递归直到满足规则为止
@@ -26,6 +26,6 @@ int validate_pit(int x, int y, int z);
 // 给该坐标填写一个数，进行深度优先搜索，直到找到有解的数字
 int fill_pit();
 // 按照level难度给数独的解挖坑，每个九宫格挖随机数量的坑（填0）
-void hash_sudoku(int level);
+void hash_sudoku();
 
 #endif

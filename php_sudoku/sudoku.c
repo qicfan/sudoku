@@ -26,8 +26,7 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "php_sudoku.h"
-#include "lsudoku.c"
-
+#include "lsudoku.h"
 
 /* If you declare any globals in php_sudoku.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(sudoku)
@@ -35,7 +34,7 @@ ZEND_DECLARE_MODULE_GLOBALS(sudoku)
 
 /* True global resources - no need for thread safety here */
 extern int SUDOKU[9][9];
-extern int DISPLAY[9][9];
+extern int DIS_SUDOKU[9][9];
 static int le_sudoku;
 
 /* {{{ sudoku_functions[]
@@ -43,7 +42,8 @@ static int le_sudoku;
  * Every user visible function must have an entry in sudoku_functions[].
  */
 const zend_function_entry sudoku_functions[] = {
-	PHP_FE(generate_sudoku, NULL)
+	PHP_FE(lgenerate_sudoku, NULL)
+	PHP_FE(get_sudoku, NULL)
 	PHP_FE_END	/* Must be the last line in sudoku_functions[] */
 };
 /* }}} */
@@ -71,27 +71,6 @@ zend_module_entry sudoku_module_entry = {
 #ifdef COMPILE_DL_SUDOKU
 ZEND_GET_MODULE(sudoku)
 #endif
-
-/* {{{ PHP_INI
- */
-/* Remove comments and fill if you need to have entries in php.ini
-PHP_INI_BEGIN()
-    STD_PHP_INI_ENTRY("sudoku.global_value",      "42", PHP_INI_ALL, OnUpdateLong, global_value, zend_sudoku_globals, sudoku_globals)
-    STD_PHP_INI_ENTRY("sudoku.global_string", "foobar", PHP_INI_ALL, OnUpdateString, global_string, zend_sudoku_globals, sudoku_globals)
-PHP_INI_END()
-*/
-/* }}} */
-
-/* {{{ php_sudoku_init_globals
- */
-/* Uncomment this function if you have INI entries
-static void php_sudoku_init_globals(zend_sudoku_globals *sudoku_globals)
-{
-	sudoku_globals->global_value = 0;
-	sudoku_globals->global_string = NULL;
-}
-*/
-/* }}} */
 
 /* {{{ PHP_MINIT_FUNCTION
  */
@@ -147,16 +126,30 @@ PHP_MINFO_FUNCTION(sudoku)
 }
 /* }}} */
 
-PHP_FUNCTION(generate_sudoku)
+PHP_FUNCTION(lgenerate_sudoku)
 {
-	int arg = 1;
 	int x,y;
 	zval *ret = NULL;
 	MAKE_STD_ZVAL(ret);
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &arg) == FAILURE) {
-		return;
+	generate_sudoku();
+	array_init(ret);
+	for (y=0;y<9;y++) {
+		zval *arr = NULL;
+		MAKE_STD_ZVAL(arr);
+		array_init(arr);
+		for (x=0;x<9;x++) {
+			add_index_long(arr, x, DIS_SUDOKU[y][x]);
+		}
+		add_index_zval(ret, y, arr);
 	}
-	lgenerate_sudoku(arg);
+	RETURN_ZVAL(ret, 0, 0);
+}
+
+PHP_FUNCTION(get_sudoku)
+{
+	int x,y;
+	zval *ret = NULL;
+	MAKE_STD_ZVAL(ret);
 	array_init(ret);
 	for (y=0;y<9;y++) {
 		zval *arr = NULL;
@@ -169,20 +162,3 @@ PHP_FUNCTION(generate_sudoku)
 	}
 	RETURN_ZVAL(ret, 0, 0);
 }
-
-/* }}} */
-/* The previous line is meant for vim and emacs, so it can correctly fold and 
-   unfold functions in source code. See the corresponding marks just before 
-   function definition, where the functions purpose is also documented. Please 
-   follow this convention for the convenience of others editing your code.
-*/
-
-
-/*
- * Local variables:
- * tab-width: 4
- * c-basic-offset: 4
- * End:
- * vim600: noet sw=4 ts=4 fdm=marker
- * vim<600: noet sw=4 ts=4
- */

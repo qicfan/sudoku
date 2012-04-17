@@ -11,7 +11,7 @@ SHLIB_DL_SUFFIX_NAME = so
 ZEND_EXT_TYPE = zend_extension
 RE2C = exit 0;
 AWK = awk
-shared_objects_sudoku = sudoku.lo
+shared_objects_sudoku = sudoku.lo lsudoku.lo common.lo
 PHP_PECL_EXTENSION = sudoku
 PHP_MODULES = $(phplibdir)/sudoku.la
 PHP_ZEND_EX =
@@ -163,6 +163,10 @@ distclean: clean
 .NOEXPORT:
 sudoku.lo: /Users/qicfan/Develop/php-5.3.8/ext/sudoku/sudoku.c
 	$(LIBTOOL) --mode=compile $(CC)  -I. -I/Users/qicfan/Develop/php-5.3.8/ext/sudoku $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /Users/qicfan/Develop/php-5.3.8/ext/sudoku/sudoku.c -o sudoku.lo 
+lsudoku.lo: /Users/qicfan/Develop/php-5.3.8/ext/sudoku/lsudoku.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/Users/qicfan/Develop/php-5.3.8/ext/sudoku $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /Users/qicfan/Develop/php-5.3.8/ext/sudoku/lsudoku.c -o lsudoku.lo 
+common.lo: /Users/qicfan/Develop/php-5.3.8/ext/sudoku/common.c
+	$(LIBTOOL) --mode=compile $(CC)  -I. -I/Users/qicfan/Develop/php-5.3.8/ext/sudoku $(COMMON_FLAGS) $(CFLAGS_CLEAN) $(EXTRA_CFLAGS)  -c /Users/qicfan/Develop/php-5.3.8/ext/sudoku/common.c -o common.lo 
 $(phplibdir)/sudoku.la: ./sudoku.la
 	$(LIBTOOL) --mode=install cp ./sudoku.la $(phplibdir)
 
